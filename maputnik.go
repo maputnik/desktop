@@ -27,6 +27,10 @@ func main() {
 			Name:  "watch",
 			Usage: "Notify web client about JSON style file changes",
 		},
+		cli.StringFlag{
+			Name:  "static",
+			Usage: "Serve directory under /static/",
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
@@ -50,6 +54,11 @@ func main() {
 					filewatch.ServeWebsocketFileWatcher(filename, w, r)
 				})
 			}
+		}
+		staticDir := c.String("static")
+		if staticDir != "" {
+			h := http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir)))
+			router.PathPrefix("/static/").Handler(h)
 		}
 
 		router.PathPrefix("/").Handler(http.StripPrefix("/", gui))
