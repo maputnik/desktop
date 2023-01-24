@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+        "github.com/GeertJohan/go.rice"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/maputnik/desktop/filewatch"
@@ -39,7 +40,7 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		gui := http.FileServer(assetFS())
+		gui := http.FileServer(rice.MustFindBox("editor/public").HTTPBox())
 
 		router := mux.NewRouter().StrictSlash(true)
 

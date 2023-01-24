@@ -7,7 +7,7 @@ GOBIN := $(if $(GOBIN),$(GOBIN),$(HOME)/go/bin)
 
 all: $(BINARY)
 
-$(BINARY): $(GOBIN)/gox $(SOURCES) bindata_assetfs.go
+$(BINARY): $(GOBIN)/gox $(SOURCES) rice-box.go
 	$(GOBIN)/gox -osarch "windows/amd64 linux/amd64 darwin/amd64" -output "bin/{{.OS}}/${BINARY}"
 
 editor/create_folder:
@@ -20,15 +20,12 @@ editor/pull_release: editor/create_folder
 $(GOBIN)/gox:
 	go install github.com/mitchellh/gox@latest
 
-$(GOBIN)/go-bindata:
-	go install github.com/go-bindata/go-bindata/...
+$(GOBIN)/rice:
+	go install github.com/GeertJohan/go.rice/rice@latest
 
-$(GOBIN)/go-bindata-assetfs: $(GOBIN)/go-bindata
-	go install github.com/elazarl/go-bindata-assetfs/...
-
-bindata_assetfs.go: $(GOBIN)/go-bindata-assetfs editor/pull_release
-	$(GOBIN)/go-bindata-assetfs -o $@ -prefix "editor/" editor/public/...
+rice-box.go: $(GOBIN)/rice editor/pull_release
+	$(GOBIN)/rice embed-go
 
 .PHONY: clean
 clean:
-	rm -rf editor/public && rm -f bindata.go && rm -f bindata_assetfs.go && rm -rf bin
+	rm -rf editor/public && rm -f rice-box.go && rm -rf bin
