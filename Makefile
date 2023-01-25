@@ -18,10 +18,10 @@ editor/pull_release: editor/create_folder
 	test -d /home/runner/work/editor/editor/build/build && echo "exists" && cd editor && cp -R /home/runner/work/editor/editor/build/build public/ || (echo "does not exist" && cd editor && rm -rf public && curl -L https://github.com/maputnik/editor/releases/download/$(EDITOR_VERSION)/public.zip --output public.zip && unzip public.zip && rm public.zip)
 
 $(GOBIN)/gox:
-	go install github.com/mitchellh/gox@latest
+	go install github.com/mitchellh/gox@v1.0.1
 
 $(GOBIN)/rice:
-	go install github.com/GeertJohan/go.rice/rice@latest
+	go install github.com/GeertJohan/go.rice/rice@v1.0.3
 
 rice-box.go: $(GOBIN)/rice editor/pull_release
 	$(GOBIN)/rice embed-go
